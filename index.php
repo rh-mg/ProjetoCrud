@@ -80,91 +80,104 @@ if(!$_SESSION['usuario']) {
                        
                         <?php
                         if(count($_POST) > 0) {
+                            $erros = [];
+
                             if(!filter_input(INPUT_POST, "nome")) {
-                                echo 'Nome é obrigatório', '<br>';
+                                $erros['nome'] = 'Nome é obrigatório';
                             }
 
                             if(filter_input(INPUT_POST, "nascimento")) {
                                 $data = DateTime::createFromFormat(
                                 'd/m/Y', $_POST['nascimento']);
                                 if(!$data) {
-                                    echo 'Data deve estar no padrão dd/mm/aaaa', '<br>';
+                                    $erros['nascimento'] = 'Data deve estar no padrão dd/mm/aaaa';
                                 }
                             }
 
                              if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                                 echo 'Email inválido', '<br>';
+                                $erros['email'] = 'Email inválido';
                              }
 
                              if(strlen($_POST['phone']) < 14) {
-                                 echo 'Digite um telefone valido', '<br>';
+                                $erros['phone'] = 'Digite um telefone valido';
                              }
 
                              if(strlen($_POST['cpf']) < 14) {
-                                echo 'Digite um CPF valido', '<br>';
+                                $erros['cpf'] = 'Digite um CPF valido';
                             }
 
                             if(strlen($_POST['message']) < 14) {
-                                echo 'Digite alguma informação', '<br>';
+                                $erros['message'] = 'Digite alguma informação';
                             }
+                           
+                            //se eu tiver alguma array de erro
+                           if(count($_POST) > 0) {
 
+                           }
                            
 
                         }
                         ?>
+                        
+                        <?php /* foreach($erros as $erro): ?>
+                            <div class="alert alert-danger" role="alert">
+                        <?= $erro ?>
+                        </div>
+                        <?php endforeach ?> */ ?>
                        
-<br>
+                       
+                        <br>
                         <form action="#" method="post" id="contactForm" data-sb-form-api-token="API_TOKEN">
                             <!-- NOME input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="name" name="nome" type="text" placeholder="Enter your name..." data-sb-validations="required" 
+                                <input class="form-control <?= $erros['nome'] ? 'is-invalid' : ''?>" id="name" name="nome" type="text" placeholder="Enter your name..." data-sb-validations="required" 
                                 value="<?= $_POST['nome'] ?>"/>
                                 <label for="name">Nome Completo</label>
-                                <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                                <div class="invalid-feedback"<?= $erros['nome']?> data-sb-feedback="name:required">Campo de nome Obrigatório!</div>
                             </div>
                             <!-- DtNascimento input-->
                             <div class="form-floating mb-3">
                             <script src="js/validardata.js"></script>
-                                <input  class="form-control" type="text" name="nascimento" id="nascimento" maxlength="10" onkeypress="mascaraData(this)" placeholder="Nascimento" 
+                                <input  class="form-control <?= $erros['nascimento'] ? 'is-invalid' : ''?>" type="text" name="nascimento" id="nascimento" maxlength="10" onkeypress="mascaraData(this)" placeholder="Nascimento" 
                                 data-sb-validations="required" value="<?= $_POST['nascimento'] ?>" />
                                    
                                 <label for="nascimento">Data de Nascimento</label>
-                                <div class="invalid-feedback" data-sb-feedback="nascimento:required">Digite uma data de nascimento</div>
+                                <div class="invalid-feedback"<?= $erros['nascimento']?> data-sb-feedback="nascimento:required">Digite uma Data de nascimento Válida</div>
                             </div>
                             <!-- ENDEREÇO DE EMAIL input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" 
+                                <input class="form-control <?= $erros['email'] ? 'is-invalid' : ''?>" id="email" name="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" 
                                 value="<?= $_POST['email'] ?>" />
                                 <label for="email">Edereço de Email</label>
-                                <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                                <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                                <div class="invalid-feedback"<?= $erros['email']?> data-sb-feedback="email:required">Digite um email válido.</div>
+                              
                             </div>
                             <!-- TELEFONE input-->
                             <div class="form-floating mb-3">
                             <script src="js/validarphone.js"></script>
-                            <input class="form-control"  id="phone" name="phone" onkeypress="mascara(this, telefone)" maxlength="15" placeholder="(__) _____-____" type="text" data-sb-validations="required" 
+                            <input class="form-control <?= $erros['phone'] ? 'is-invalid' : ''?>"  id="phone" name="phone" onkeypress="mascara(this, telefone)" maxlength="15" placeholder="(__) _____-____" type="text" data-sb-validations="required" 
                             value="<?= $_POST['phone'] ?>" />
                                 <label for="phone">Telefone</label>
-                                <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
+                                <div class="invalid-feedback"<?= $erros['phone']?> data-sb-feedback="phone:required">Digite um número de telefone válido com DDD.</div>
                             </div>
 
                             <!-- CPF input-->
                             <div class="form-floating mb-3">
                             <script src="js/validarcpf.js"></script>
-                                <input class="form-control" id="cpf" type="text" onkeydown="javascript: fMasc( this, mCPF );" placeholder="Ex.: 000.000.000-00" maxlength="14" name="cpf" data-sb-validations="required"  
+                                <input class="form-control <?= $erros['cpf'] ? 'is-invalid' : ''?>" id="cpf" type="text" onkeydown="javascript: fMasc( this, mCPF );" placeholder="Ex.: 000.000.000-00" maxlength="14" name="cpf" data-sb-validations="required"  
                                 value="<?= $_POST['cpf'] ?>"/>
                                 
                                 <label for="cpf">CPF</label>
-                                <div class="invalid-feedback" data-sb-feedback="RegraValida:required">DIGITE UM CPF VALIDO</div>
+                                <div class="invalid-feedback"<?= $erros['cpf']?> data-sb-feedback="RegraValida:required">Digite um CPF válido.</div>
                             </div>
                            
                             
                              <!-- Message input-->
                              <div class="form-floating mb-3">
-                                <textarea class="form-control" id="message" name="message" type="text" maxlength="180" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"
+                                <textarea class="form-control <?= $erros['message'] ? 'is-invalid' : ''?>" id="message" name="message" type="text" maxlength="180" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"
                                 value="<?= $_POST['message'] ?>"></textarea>
                                 <label for="message">Message</label>
-                                <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                                <div class="invalid-feedback"<?= $erros['message']?> data-sb-feedback="message:required">Digite alguma mensagem.</div>
                             </div>
                             <!-- Submit success message-->
                             <!---->
