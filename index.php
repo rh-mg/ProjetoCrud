@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 <?php
 session_start();
 
@@ -75,30 +77,93 @@ if(!$_SESSION['usuario']) {
                         <!-- To make this form functional, sign up at-->
                         <!-- https://startbootstrap.com/solution/contact-forms-->
                         <!-- to get an API token!-->
-                        <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                            <!-- Name input-->
+                       
+                        <?php
+                        if(count($_POST) > 0) {
+                            if(!filter_input(INPUT_POST, "nome")) {
+                                echo 'Nome é obrigatório', '<br>';
+                            }
+
+                            if(filter_input(INPUT_POST, "nascimento")) {
+                                $data = DateTime::createFromFormat(
+                                'd/m/Y', $_POST['nascimento']);
+                                if(!$data) {
+                                    echo 'Data deve estar no padrão dd/mm/aaaa', '<br>';
+                                }
+                            }
+
+                             if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                                 echo 'Email inválido', '<br>';
+                             }
+
+                             if(strlen($_POST['phone']) < 14) {
+                                 echo 'Digite um telefone valido', '<br>';
+                             }
+
+                             if(strlen($_POST['cpf']) < 14) {
+                                echo 'Digite um CPF valido', '<br>';
+                            }
+
+                            if(strlen($_POST['message']) < 14) {
+                                echo 'Digite alguma informação', '<br>';
+                            }
+
+                           
+
+                        }
+                        ?>
+                       
+<br>
+                        <form action="#" method="post" id="contactForm" data-sb-form-api-token="API_TOKEN">
+                            <!-- NOME input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="name" type="text" placeholder="Enter your name..." data-sb-validations="required" />
+                                <input class="form-control" id="name" name="nome" type="text" placeholder="Enter your name..." data-sb-validations="required" 
+                                value="<?= $_POST['nome'] ?>"/>
                                 <label for="name">Nome Completo</label>
                                 <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
                             </div>
-                            <!-- Email address input-->
+                            <!-- DtNascimento input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" />
+                            <script src="js/validardata.js"></script>
+                                <input  class="form-control" type="text" name="nascimento" id="nascimento" maxlength="10" onkeypress="mascaraData(this)" placeholder="Nascimento" 
+                                data-sb-validations="required" value="<?= $_POST['nascimento'] ?>" />
+                                   
+                                <label for="nascimento">Data de Nascimento</label>
+                                <div class="invalid-feedback" data-sb-feedback="nascimento:required">Digite uma data de nascimento</div>
+                            </div>
+                            <!-- ENDEREÇO DE EMAIL input-->
+                            <div class="form-floating mb-3">
+                                <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" 
+                                value="<?= $_POST['email'] ?>" />
                                 <label for="email">Edereço de Email</label>
                                 <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
                                 <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
                             </div>
-                            <!-- Phone number input-->
+                            <!-- TELEFONE input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control" id="phone" type="tel" placeholder="(123) 456-7890" data-sb-validations="required" />
+                            <script src="js/validarphone.js"></script>
+                            <input class="form-control"  id="phone" name="phone" onkeypress="mascara(this, telefone)" maxlength="15" placeholder="(__) _____-____" type="text" data-sb-validations="required" 
+                            value="<?= $_POST['phone'] ?>" />
                                 <label for="phone">Telefone</label>
                                 <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
                             </div>
-                            <!-- Message input-->
+
+                            <!-- CPF input-->
                             <div class="form-floating mb-3">
-                                <textarea class="form-control" id="message" type="text" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"></textarea>
-                                <label for="message">Mensagem</label>
+                            <script src="js/validarcpf.js"></script>
+                                <input class="form-control" id="cpf" type="text" onkeydown="javascript: fMasc( this, mCPF );" placeholder="Ex.: 000.000.000-00" maxlength="14" name="cpf" data-sb-validations="required"  
+                                value="<?= $_POST['cpf'] ?>"/>
+                                
+                                <label for="cpf">CPF</label>
+                                <div class="invalid-feedback" data-sb-feedback="RegraValida:required">DIGITE UM CPF VALIDO</div>
+                            </div>
+                           
+                            
+                             <!-- Message input-->
+                             <div class="form-floating mb-3">
+                                <textarea class="form-control" id="message" name="message" type="text" maxlength="180" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"
+                                value="<?= $_POST['message'] ?>"></textarea>
+                                <label for="message">Message</label>
                                 <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                             </div>
                             <!-- Submit success message-->
@@ -118,8 +183,10 @@ if(!$_SESSION['usuario']) {
                             <!-- This is what your users will see when there is-->
                             <!-- an error submitting the form-->
                             <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                            <!-- Submit Button-->
-                            <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Send</button>
+                            <!-- Botão enviar vs1  --> 
+                            <button class="btn btn-primary btn-lg">Enviar</button> 
+                            <!-- Submit Button 
+                            <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Enviar</button> --> 
                         </form>
                     </div>
                 </div>
