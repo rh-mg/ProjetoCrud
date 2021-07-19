@@ -51,7 +51,7 @@ if(!$_SESSION['usuario']) {
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="logout.php">Sair</a></li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#contact"><?= $_SESSION['usuario'] ?></a></li>
+                        <li class="nav-item mx-0 mx-lg-1" data-bs-toggle="modal" data-bs-target="#portfolioModal1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#contact">Membros Cadastrados</a></li>
                     </ul>
                 </div>
             </div>
@@ -114,60 +114,8 @@ if(!$_SESSION['usuario']) {
                        
                         <br>
                         
-                        <?php require_once 'db/processo.php' ?>
-
-                        <?php
-                             $mysqli = new mysqli('127.0.0.1:3306', 'root', 'root', 'crud') or die(mysqli_error($mysqli));
-                             $result = $mysqli->query("SELECT * FROM data") or die($mysqli->error);;
-                             //pre_r($result);
-                             //pre_r($result->fetch_assoc());
-                             //pre_r($result->fetch_assoc());
-                             ?>
-
-                        <div class="row justify-content-center">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Data de Nascimento</th>
-                                        <th>E-Mail</th>
-                                        <th>Telefone</th>
-                                        <th>CPF</th>
-                                        <th>Mensagem</th>
-                                        <th colspan="6">Action</th>
-
-                                </tr>
-                    </thead>
-                    <?php
-                    while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo $row['nome']; ?></td>
-                        <td><?php echo $row['nascimento']; ?></td>
-                        <td><?php echo $row['email']; ?></td>
-                        <td><?php echo $row['phone']; ?></td>
-                        <td><?php echo $row['cpf']; ?></td>
-                        <td><?php echo $row['mensagem']; ?></td>
-                        <td>
-                            <a href="index.php?edit=<?php echo $row['id']; ?>"
-                               class="btn btn-info">Editar</a>
-                            <a href="db/processo.php?delete=<?php echo $row['id']; ?>"
-                               class="btn btn-danger">Deletar</a>
-                        </td>
-
-                    </tr>
-                    <?php endwhile; ?>
-                    </table>              
-                    </div>
- 
-                       <?php
-                       function pre_r( $array ) {
-                           echo '<pre>';
-                           print_r($array);
-                           echo '</pre>';
-                       }
-                       ?>
-
-                        <form action="db/processo.php" method="POST">
+                       
+                       <form action="db/processo.php" method="POST">
                         <input type="hidden" name="id" value="<?php echo $id; ?>">
                             <!-- NOME input-->
                             <div class="form-floating mb-3">
@@ -252,6 +200,7 @@ if(!$_SESSION['usuario']) {
                             <!-- Submit Button 
                             <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Enviar</button> --> 
                         </form>
+                       
                     </div>
                 </div>
             </div>
@@ -294,6 +243,95 @@ if(!$_SESSION['usuario']) {
             <div class="container"><small>Copyright &copy; ProjetoCRUD 2021</small></div>
         </div>
        
+         <!-- Portfolio Modal 1-->
+         <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" aria-labelledby="portfolioModal1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                    <div class="modal-body text-center pb-5">
+                        <div class="container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-8">
+                                    <!-- Portfolio Modal - Title-->
+                                    <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">Membros</h2>
+                                    <!-- Icon Divider-->
+                                    <div class="divider-custom">
+                                        <div class="divider-custom-line"></div>
+                                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                        <div class="divider-custom-line"></div>
+                                    </div>
+                                    <!-- Portfolio Modal - Image-->
+                                    <?php require_once 'db/processo.php' ?>
+
+                        <?php
+                             $mysqli = new mysqli('127.0.0.1:3306', 'root', 'root', 'crud') or die(mysqli_error($mysqli));
+                             $result = $mysqli->query("SELECT * FROM data") or die($mysqli->error);;
+                             //pre_r($result);
+                             //pre_r($result->fetch_assoc());
+                             //pre_r($result->fetch_assoc());
+                             ?>
+
+                        <div class="row justify-content-center">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Data de Nascimento</th>
+                                        <th>E-Mail</th>
+                                        <th>Telefone</th>
+                                        <th>CPF</th>
+                                        <th>Mensagem</th>
+                                        <th colspan="6">Action</th>
+
+                                </tr>
+                    </thead>
+                    <?php
+                    while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row['nome']; ?></td>
+                        <td><?php echo $row['nascimento']; ?></td>
+                        <td><?php echo $row['email']; ?></td>
+                        <td><?php echo $row['phone']; ?></td>
+                        <td><?php echo $row['cpf']; ?></td>
+                        <td><?php echo $row['mensagem']; ?></td>
+                        <td>
+                            
+
+                   
+                   
+                    
+                            <a href="index.php?edit=<?php echo $row['id']; ?>"
+                               class="btn btn-info">Editar</a>
+                  
+                            <a href="db/processo.php?delete=<?php echo $row['id']; ?>"
+                               class="btn btn-danger">Deletar</a>
+                             
+                        </td>
+                       
+                    </tr>
+                    <?php endwhile; ?>
+                    </table>              
+                    </div>
+ 
+                       <?php
+                       function pre_r( $array ) {
+                           echo '<pre>';
+                           print_r($array);
+                           echo '</pre>';
+                       }
+                       ?>
+                                    
+                                    <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
+                                        <i class="fas fa-times fa-fw"></i>
+                                        Close Window
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
       
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
