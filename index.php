@@ -222,7 +222,7 @@ if(!$_SESSION['usuario']) {
                     <div class="col-lg-4">
                         <h4 class="text-uppercase mb-4">SOBRE O CRUD</h4>
                         <p class="lead mb-0">
-                            Ainda não finalizado...
+                            Ainda não finalizado... Mas funcionando.
                          
                             
                         </p>
@@ -315,7 +315,7 @@ if(!$_SESSION['usuario']) {
                                     
                                     <button class="btn btn-primary" href="#!" data-bs-dismiss="modal">
                                         <i class="fas fa-times fa-fw"></i>
-                                        Close Window
+                                        Fecha janela
                                     </button>
                                 </div>
                             </div>
