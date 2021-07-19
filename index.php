@@ -30,10 +30,18 @@ if(!$_SESSION['usuario']) {
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
     </head>
+
+    
     <body id="page-top">
+
+   
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
-          
+       
+
+  
+
+
             <div class="container">
                 <a class="navbar-brand" href="#page-top">Projeto CRUD</a>
                 <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,15 +56,40 @@ if(!$_SESSION['usuario']) {
                 </div>
             </div>
         </nav>
+        
+
         <!-- Masthead-->
         
         <!-- Portfolio Section-->
        
         <!-- About Section-->
        
-        <!-- Contact Section-->
+        <!-- Validação retirada 001 -->
+       
+                     
+                       
+                        
+                         <!-- Contact Section-->
         <section class="page-section" id="contact">
             <div class="container">
+            <?php require_once 'db/processo.php'; ?>
+
+<?php
+
+  if (isset($_SESSION['message'])): ?>
+
+  <div class="alert alert-<?=$_SESSION['msg_type']?>">
+  
+
+  <?php
+  echo $_SESSION['message'];
+  
+  unset($_SESSION['message']);
+?>
+
+  </div>
+
+  <?php endif ?>
                 <!-- Contact Section Heading-->
                 <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0"></h2>
                 <!-- Icon Divider
@@ -76,106 +109,118 @@ if(!$_SESSION['usuario']) {
                         <!-- https://startbootstrap.com/solution/contact-forms-->
                         <!-- to get an API token!-->
                        
-                        <?php
-                        if(count($_POST) > 0) {
-                            $erros = [];
-
-                            if(!filter_input(INPUT_POST, "nome")) {
-                                $erros['nome'] = 'Nome é obrigatório';
-                            }
-
-                            if(filter_input(INPUT_POST, "nascimento")) {
-                                $data = DateTime::createFromFormat(
-                                'd/m/Y', $_POST['nascimento']);
-                                if(!$data) {
-                                    $erros['nascimento'] = 'Data deve estar no padrão dd/mm/aaaa';
-                                }
-                            }
-
-                             if(!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                                $erros['email'] = 'Email inválido';
-                             }
-
-                             if(strlen($_POST['phone']) < 14) {
-                                $erros['phone'] = 'Digite um telefone valido';
-                             }
-
-                             if(strlen($_POST['cpf']) < 14) {
-                                $erros['cpf'] = 'Digite um CPF valido';
-                            }
-
-                            if(strlen($_POST['message']) < 14) {
-                                $erros['message'] = 'Digite alguma informação';
-                            }
-                           
-                            //se eu tiver alguma array de erro
-                           if(count($_POST) > 0) {
-
-                           }
-                           
-
-                        }
-                        ?>
-                        
-                        <?php /* foreach($erros as $erro): ?>
-                            <div class="alert alert-danger" role="alert">
-                        <?= $erro ?>
-                        </div>
-                        <?php endforeach ?> */ ?>
+                     
                        
                        
                         <br>
-                        <form action="#" method="post" id="contactForm" data-sb-form-api-token="API_TOKEN">
+                        
+                        <?php require_once 'db/processo.php' ?>
+
+                        <?php
+                             $mysqli = new mysqli('127.0.0.1:3306', 'root', 'root', 'crud') or die(mysqli_error($mysqli));
+                             $result = $mysqli->query("SELECT * FROM data") or die($mysqli->error);;
+                             //pre_r($result);
+                             //pre_r($result->fetch_assoc());
+                             //pre_r($result->fetch_assoc());
+                             ?>
+
+                        <div class="row justify-content-center">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Data de Nascimento</th>
+                                        <th>E-Mail</th>
+                                        <th>Telefone</th>
+                                        <th>CPF</th>
+                                        <th>Mensagem</th>
+                                        <th colspan="6">Action</th>
+
+                                </tr>
+                    </thead>
+                    <?php
+                    while ($row = $result->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo $row['nome']; ?></td>
+                        <td><?php echo $row['nascimento']; ?></td>
+                        <td><?php echo $row['email']; ?></td>
+                        <td><?php echo $row['phone']; ?></td>
+                        <td><?php echo $row['cpf']; ?></td>
+                        <td><?php echo $row['mensagem']; ?></td>
+                        <td>
+                            <a href="index.php?edit=<?php echo $row['id']; ?>"
+                               class="btn btn-info">Editar</a>
+                            <a href="db/processo.php?delete=<?php echo $row['id']; ?>"
+                               class="btn btn-danger">Deletar</a>
+                        </td>
+
+                    </tr>
+                    <?php endwhile; ?>
+                    </table>              
+                    </div>
+ 
+                       <?php
+                       function pre_r( $array ) {
+                           echo '<pre>';
+                           print_r($array);
+                           echo '</pre>';
+                       }
+                       ?>
+
+                        <form action="db/processo.php" method="POST">
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
                             <!-- NOME input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control <?= $erros['nome'] ? 'is-invalid' : ''?>" id="name" name="nome" type="text" placeholder="Enter your name..." data-sb-validations="required" 
-                                value="<?= $_POST['nome'] ?>"/>
-                                <label for="name">Nome Completo</label>
-                                <div class="invalid-feedback"<?= $erros['nome']?> data-sb-feedback="name:required">Campo de nome Obrigatório!</div>
+                                <input type="text" name="nome" class="form-control" id="nome" placeholder="Enter your name..." data-sb-validations="required" 
+                                value="<?php echo $nome; ?>"/>
+                                <label for="nome">Nome Completo</label>
+                                <div class="invalid-feedback" data-sb-feedback="nome:required">Campo de nome Obrigatório!</div>
                             </div>
                             <!-- DtNascimento input-->
                             <div class="form-floating mb-3">
                             <script src="js/validardata.js"></script>
-                                <input  class="form-control <?= $erros['nascimento'] ? 'is-invalid' : ''?>" type="text" name="nascimento" id="nascimento" maxlength="10" onkeypress="mascaraData(this)" placeholder="Nascimento" 
-                                data-sb-validations="required" value="<?= $_POST['nascimento'] ?>" />
+                                <input  type="date" name="nascimento" class="form-control" id="nascimento" maxlength="14" placeholder="Entre com seu nascimento" 
+                                data-sb-validations="nascimento:required" value="<?php echo $nascimento; ?>" />
                                    
                                 <label for="nascimento">Data de Nascimento</label>
-                                <div class="invalid-feedback"<?= $erros['nascimento']?> data-sb-feedback="nascimento:required">Digite uma Data de nascimento Válida</div>
+                                <div class="invalid-feedback" data-sb-feedback="nascimento:required">Digite uma Data de nascimento Válida</div>
                             </div>
                             <!-- ENDEREÇO DE EMAIL input-->
                             <div class="form-floating mb-3">
-                                <input class="form-control <?= $erros['email'] ? 'is-invalid' : ''?>" id="email" name="email" type="email" placeholder="name@example.com" data-sb-validations="required,email" 
-                                value="<?= $_POST['email'] ?>" />
+                                <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" data-sb-validations="required,email" 
+                                value="<?php echo $email; ?>" />
                                 <label for="email">Edereço de Email</label>
-                                <div class="invalid-feedback"<?= $erros['email']?> data-sb-feedback="email:required">Digite um email válido.</div>
+                                <div class="invalid-feedback" data-sb-feedback="email:required">Digite um email válido.</div>
                               
                             </div>
-                            <!-- TELEFONE input-->
+                            
+
+                             <!-- TELEFONE input-->
                             <div class="form-floating mb-3">
                             <script src="js/validarphone.js"></script>
-                            <input class="form-control <?= $erros['phone'] ? 'is-invalid' : ''?>"  id="phone" name="phone" onkeypress="mascara(this, telefone)" maxlength="15" placeholder="(__) _____-____" type="text" data-sb-validations="required" 
-                            value="<?= $_POST['phone'] ?>" />
+                            <input type="text" name="phone" class="form-control"  id="phone" onkeypress="mascara(this, telefone)" maxlength="15" placeholder="(__) _____-____" data-sb-validations="required" 
+                            value="<?php echo $phone; ?>" />
                                 <label for="phone">Telefone</label>
-                                <div class="invalid-feedback"<?= $erros['phone']?> data-sb-feedback="phone:required">Digite um número de telefone válido com DDD.</div>
+                                <div class="invalid-feedback" data-sb-feedback="phone:required">Digite um número de telefone válido com DDD.</div>
                             </div>
 
                             <!-- CPF input-->
                             <div class="form-floating mb-3">
                             <script src="js/validarcpf.js"></script>
-                                <input class="form-control <?= $erros['cpf'] ? 'is-invalid' : ''?>" id="cpf" type="text" onkeydown="javascript: fMasc( this, mCPF );" placeholder="Ex.: 000.000.000-00" maxlength="14" name="cpf" data-sb-validations="required"  
-                                value="<?= $_POST['cpf'] ?>"/>
+                                <input type="text" name="cpf" class="form-control" id="cpf" onkeydown="javascript: fMasc( this, mCPF );" placeholder="Ex.: 000.000.000-00" maxlength="14" data-sb-validations="required"  
+                                value="<?php echo $cpf; ?>"/>
                                 
                                 <label for="cpf">CPF</label>
-                                <div class="invalid-feedback"<?= $erros['cpf']?> data-sb-feedback="RegraValida:required">Digite um CPF válido.</div>
+                                <div class="invalid-feedback" data-sb-feedback="RegraValida:required">Digite um CPF válido.</div>
                             </div>
                            
                             
                              <!-- Message input-->
                              <div class="form-floating mb-3">
-                                <textarea class="form-control <?= $erros['message'] ? 'is-invalid' : ''?>" id="message" name="message" type="text" maxlength="180" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"
-                                value="<?= $_POST['message'] ?>"></textarea>
-                                <label for="message">Message</label>
-                                <div class="invalid-feedback"<?= $erros['message']?> data-sb-feedback="message:required">Digite alguma mensagem.</div>
+                                <textarea type="text" name="mensagem" class="form-control" id="mensagem" maxlength="180" placeholder="Enter your message here..." style="height: 10rem" data-sb-validations="required"
+                                value="<?php echo $mensagem; ?>"><?php echo $mensagem; ?></textarea>
+                                <label for="mensagem">Mensagem</label>
+                                <div class="invalid-feedback" data-sb-feedback="mensagem:required">Digite alguma mensagem.</div>
                             </div>
                             <!-- Submit success message-->
                             <!---->
@@ -195,7 +240,15 @@ if(!$_SESSION['usuario']) {
                             <!-- an error submitting the form-->
                             <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                             <!-- Botão enviar vs1  --> 
-                            <button class="btn btn-primary btn-lg">Enviar</button> 
+                           
+                           <?php
+                            if ($update == true):
+                            ?>
+                          
+                        <button type="submit" class="btn btn-info btn-lg" name="update">Atualizar</button> 
+                        <?php else: ?>
+                        <button type="submit" class="btn btn-primary btn-lg" name="save">Enviar</button> 
+                        <?php endif; ?>
                             <!-- Submit Button 
                             <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Enviar</button> --> 
                         </form>

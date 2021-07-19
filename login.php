@@ -11,10 +11,16 @@ if($_POST['email']) {
         "email" => "lania@gmail.com",
         "senha" => "123456",
     ],
+    
      [
         "nome" => "Rhana Modena",
         "email" => "maninha@zmail.com",
         "senha" => "654321",
+     ],
+     [
+        "nome" => "Administrador",
+        "email" => "admin@gmail.com",
+        "senha" => "admin",
      ],
   ];
 
